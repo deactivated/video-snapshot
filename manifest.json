@@ -1,0 +1,17 @@
+{
+  "name": "YouTube Screenshot",
+  "version": "1.0",
+  "background_page": "background.html",
+
+  "permissions": [
+    "tabs",
+    "http://*/*",
+    "https://*/*"
+    
+  ],
+
+  "browser_action": {
+    "name": "Take video screenshot.",
+    "default_icon": "icon.png"
+  }
+}
