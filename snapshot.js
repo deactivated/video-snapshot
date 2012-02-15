@@ -1,16 +1,19 @@
 function stop_video(vid) {
   vid.pause();
   var s = {
-    src: vid.src,
+    src: vid.currentSrc,
+    html: vid.innerHTML,
     time: vid.currentTime
   };
 
-  vid.removeAttribute("src")
+  vid.removeAttribute("src");
+  vid.innerHTML = "";
   vid.load();
   return s;
 }
 
 function resume_video(vid, state) {
+  vid.innerHTML = state.html;
   vid.src = state.src;
   vid.addEventListener("canplay", function() {
     vid.currentTime = state.time;
@@ -23,7 +26,7 @@ function draw() {
   video = document.getElementsByTagName("video")[0];
 
   chrome.extension.sendRequest({
-    src: video.src,
+    src: video.currentSrc,
     width: video.videoWidth,
     height: video.videoHeight,
     time: video.currentTime
