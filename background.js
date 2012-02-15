@@ -15,12 +15,6 @@ function show_snapshot(data) {
   });
 }
 
-function notify(tab) {
-  chrome.tabs.sendRequest(tab.id, {resume: "true"}, function(response) {
-    console.log(response.farewell);
-  });
-}
-
 function take_snapshot(tab, req, resp) {
   var vid = document.createElement("video");
   vid.setAttribute("width", req.width);
@@ -32,7 +26,6 @@ function take_snapshot(tab, req, resp) {
   vid.addEventListener("canplay", function () {
     if (vid.currentTime < req.time) {
       vid.currentTime = req.time;
-      console.log(vid.currentTime);
       vid.play();
       return;
     }
