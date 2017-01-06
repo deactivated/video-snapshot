@@ -1,6 +1,6 @@
 {
   "name": "YouTube Screenshot",
-  "version": "0.9",
+  "version": "0.95",
 
   "manifest_version": 2, 
 
@@ -9,10 +9,7 @@
   },
 
   "permissions": [
-    "tabs",
-    "http://*/*",
-    "https://*/*"
-    
+      "activeTab"
   ],
 
   "browser_action": {
