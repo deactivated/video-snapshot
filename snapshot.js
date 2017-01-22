@@ -1,41 +1,42 @@
-function stop_video(vid) {
-  vid.pause();
-  var s = {
-    src: vid.currentSrc,
-    html: vid.innerHTML,
-    time: vid.currentTime
-  };
+function snapshot() {
+    
+    var video = document.getElementsByTagName("video")[0];
+    if (!video) {
+	console.log("No video found");
+	return;
+    }
 
-  vid.removeAttribute("src");
-  vid.innerHTML = "";
-  vid.load();
-  return s;
+    var isPlaying = (video.currentTime > 0) && !video.paused && !video.ended && (video.readyState > 2);
+    
+    if (isPlaying) {
+	video.pause();
+    }
+    
+    try {
+	var cvs = document.createElement("canvas");
+	cvs.setAttribute("width", video.videoWidth);
+	cvs.setAttribute("height", video.videoHeight);
+	
+	var ctx = cvs.getContext('2d');
+	ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+	var dataUrl = cvs.toDataURL();
+	
+	var loadInBackground = 1;
+	if (loadInBackground) {
+	    chrome.runtime.sendMessage(
+		null, {dataUrl: dataUrl}, null,
+		function(response) {
+		    console.log('Screenshot save: ' + response);
+		});
+	} else {
+	    window.open(dataUrl, '_blank');
+	}
+	
+    } finally {
+	if (isPlaying) {
+	    video.play();
+	}
+    }
 }
 
-function resume_video(vid, state) {
-  vid.innerHTML = state.html;
-  vid.src = state.src;
-  vid.addEventListener("canplay", function() {
-    vid.currentTime = state.time;
-    vid.play();
-  }, false);
-}
-
-function draw() {
-  var state, video;
-  video = document.getElementsByTagName("video")[0];
-
-  chrome.extension.sendRequest({
-    src: video.currentSrc,
-    width: video.videoWidth,
-    height: video.videoHeight,
-    time: video.currentTime
-  },
-  function(response) {
-    resume_video(video, state);
-  });
-
-  state = stop_video(video);
-}
-
-draw();
+snapshot();
